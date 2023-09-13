@@ -7,7 +7,7 @@ export function isValidArray(input: any): input is any[] {
 export function getFirstComponentByType(entities: any[] | null | undefined, typename: string): any | null {
     if (!isValidArray(entities)) return null;
 
-    for (let entity of entities) {
+    for (const entity of entities) {
         if (isValidArray(entity?.node.components)) {
             const foundComponent = entity.node.components.find((comp: any) => comp.__typename === typename);
             if (foundComponent) return foundComponent;

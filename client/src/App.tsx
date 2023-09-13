@@ -1,4 +1,3 @@
-import './App.css';
 import { useDojo } from './DojoContext';
 import { useComponentValue } from "@dojoengine/react";
 import { Direction, } from './dojo/createSystemCalls'
@@ -32,8 +31,8 @@ function App() {
       const { data } = await graphSdk.getEntities();
 
       if (data) {
-        let remaining = getFirstComponentByType(data.entities?.edges, 'Moves') as Moves;
-        let position = getFirstComponentByType(data.entities?.edges, 'Position') as Position;
+        const remaining = getFirstComponentByType(data.entities?.edges, 'Moves') as Moves;
+        const position = getFirstComponentByType(data.entities?.edges, 'Position') as Position;
 
         setComponent(Moves, parseInt(entityId.toString()) as EntityIndex, { remaining: remaining.remaining })
         setComponent(Position, parseInt(entityId.toString()) as EntityIndex, { x: position.x, y: position.y })
@@ -65,7 +64,6 @@ function App() {
         <button onClick={() => move(account, Direction.Right)}>Move Right</button> <br />
         <button onClick={() => move(account, Direction.Down)}>Move Down</button>
       </div>
-
     </>
   );
 }

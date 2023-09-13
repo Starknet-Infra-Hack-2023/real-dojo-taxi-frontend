@@ -52,6 +52,12 @@ sozo auth writer Moves spawn
 cd client && yarn && yarn dev
 ```
 
+or if using bun
+
+```console
+cd client && bun install && bun dev
+```
+
 4. **Terminal 4 - Torii**:
 
 Uncomment the 'world_address' parameter in `dojo-starter/Scarb.toml` then:
