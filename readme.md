@@ -28,6 +28,12 @@ For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org
 
 After cloning the project, execute the following:
 
+0. **init submodule**
+
+```
+git submodule update --init --recursive
+```
+
 1. **Terminal 1 - Katana**:
 
 ```console
