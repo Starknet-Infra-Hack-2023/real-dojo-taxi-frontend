@@ -3,7 +3,7 @@ import { SetupResult } from "./dojo/setup";
 import { Account, RpcProvider } from "starknet";
 import { useBurner } from "@dojoengine/create-burner";
 
-type EternumContext = {
+type Context = {
     setup: SetupResult;
     account: {
         create: () => void;
@@ -17,7 +17,7 @@ type EternumContext = {
     };
 }
 
-const DojoContext = createContext<EternumContext | null>(null);
+const DojoContext = createContext<Context | null>(null);
 
 type Props = {
     children: ReactNode;
@@ -25,9 +25,10 @@ type Props = {
 };
 
 export const DojoProvider = ({ children, value }: Props) => {
-
     const { VITE_PUBLIC_MASTER_ADDRESS, VITE_PUBLIC_MASTER_PRIVATE_KEY, VITE_PUBLIC_ACCOUNT_CLASS_HASH, VITE_PUBLIC_NODE_URL } = import.meta.env;
+
     const currentValue = useContext(DojoContext);
+
     if (currentValue) throw new Error("DojoProvider can only be used once");
 
     const provider = useMemo(
@@ -40,6 +41,7 @@ export const DojoProvider = ({ children, value }: Props) => {
 
     const masterAddress = VITE_PUBLIC_MASTER_ADDRESS!;
     const privateKey = VITE_PUBLIC_MASTER_PRIVATE_KEY!;
+
     const masterAccount = useMemo(
         () => new Account(provider, masterAddress, privateKey),
         [provider, masterAddress, privateKey],
@@ -54,7 +56,7 @@ export const DojoProvider = ({ children, value }: Props) => {
         return account || masterAccount;
     }, [account])
 
-    const contextValue: EternumContext = {
+    const contextValue: Context = {
         setup: value,    // the provided setup
         account: {
             create,        // create a new account
