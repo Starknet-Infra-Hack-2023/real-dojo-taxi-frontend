@@ -4,8 +4,13 @@ import { RPCProvider, Query, } from "@dojoengine/core";
 import { Account, num } from "starknet";
 import { GraphQLClient } from 'graphql-request';
 import { getSdk } from '../generated/graphql';
+import manifest from "./manifest.json";
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
+
+const getContractByName = (name: string) => {
+    return manifest.contracts.find((contract) => contract.name === name);
+}
 
 export async function setupNetwork() {
     // Extract environment variables for better readability.
@@ -29,8 +34,8 @@ export async function setupNetwork() {
         graphSdk: createGraphSdk(),
 
         // Execute function.
-        execute: async (signer: Account, system: string, call_data: num.BigNumberish[]) => {
-            return provider.execute(signer, system, call_data);
+        execute: async (signer: Account, contract: string, system: string, call_data: num.BigNumberish[]) => {
+            return provider.execute(signer, getContractByName(contract)?.address || "", system, call_data);
         },
 
         // Entity query function.
