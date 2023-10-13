@@ -32,7 +32,7 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "player_actions", 'spawn', [VITE_PUBLIC_WORLD_ADDRESS]);
+            const tx = await execute(signer, "player_actions", 'spawn', []);
 
             console.log(tx)
             const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
@@ -69,10 +69,12 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "player_actions", "move", [VITE_PUBLIC_WORLD_ADDRESS, direction]);
+            const tx = await execute(signer, "player_actions", "move", [direction]);
 
             console.log(tx)
             const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
+
+            console.log(receipt)
             setComponentsFromEvents(contractComponents, getEvents(receipt));
 
         } catch (e) {

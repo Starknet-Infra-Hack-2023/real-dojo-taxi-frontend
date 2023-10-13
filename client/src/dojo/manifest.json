@@ -1,7 +1,7 @@
 {
   "world": {
     "name": "world",
-    "address": null,
+    "address": "0x3fa481f41522b90b3684ecfab7650c259a76387fab9c380b7a959e3d4ac69f",
     "class_hash": "0xfd35fc17c6a9334c70e38da27aeed6a13297d9faa697547edac8a477e64448",
     "abi": [
       {
@@ -799,7 +799,7 @@
   "contracts": [
     {
       "name": "player_actions",
-      "address": null,
+      "address": "0x2a6966f93aaa4ad5c883f18988d2e9ddaa7978228c587179cf221222bc41999",
       "class_hash": "0x723c28b9bd637109255b12be937109f405ebb5ff8ed48c0db0eef98bde128ae",
       "abi": [
         {
@@ -902,7 +902,7 @@
     },
     {
       "name": "player_actions_external",
-      "address": null,
+      "address": "0xc1d6e2f0074358e8a05eda4dd9e0f93df5a902b1bc3f8de3b06f8b49d13d64",
       "class_hash": "0x1a80dbade1b3429f121303b3443a30d6412b85691f7733abe1ec5250509f081",
       "abi": [
         {
