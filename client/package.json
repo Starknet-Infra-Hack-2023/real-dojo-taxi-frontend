@@ -12,9 +12,9 @@
     "create-components": "npx @dojoengine/core src/dojo/manifest.json src/dojo/contractComponents.ts"
   },
   "dependencies": {
-    "@dojoengine/core": "^0.1.26",
-    "@dojoengine/create-burner": "^0.1.26",
-    "@dojoengine/utils": "^0.1.26",
+    "@dojoengine/core": "^0.1.27",
+    "@dojoengine/create-burner": "^0.1.27",
+    "@dojoengine/utils": "^0.1.27",
     "@latticexyz/react": "^2.0.0-next.11",
     "@latticexyz/recs": "^2.0.0-next.11",
     "@latticexyz/utils": "^2.0.0-next.11",

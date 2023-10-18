@@ -1,7 +1,7 @@
 import { useDojo } from './DojoContext';
 import { Direction, } from './dojo/createSystemCalls'
 import { useComponentValue } from "@latticexyz/react";
-import { EntityIndex, setComponent } from '@latticexyz/recs';
+import { Entity, setComponent } from '@latticexyz/recs';
 import { useEffect } from 'react';
 import { getFirstComponentByType } from './utils';
 import { Moves, Position } from './generated/graphql';
@@ -16,28 +16,37 @@ function App() {
     account: { create, list, select, account, isDeploying }
   } = useDojo();
 
-  // entity id - this example uses the account address as the entity id
-  const entityId = account.address;
+  // extract query
+  const { getEntities } = graphSdk()
 
-  console.log(account.address)
+  // entity id - this example uses the account address as the entity id
+  const entityId = account.address.toString();
 
   // get current component values
-  const position = useComponentValue(Position, entityId.toString() as EntityIndex);
-  const moves = useComponentValue(Moves, entityId.toString() as EntityIndex);
+  const position = useComponentValue(Position, entityId as Entity);
+  const moves = useComponentValue(Moves, entityId as Entity);
 
+  // use graphql to current state data
   useEffect(() => {
+
+
 
     if (!entityId) return;
 
     const fetchData = async () => {
-      const { data } = await graphSdk.getEntities();
+      const { data } = await getEntities()
 
-      if (data) {
+      await setComponent(Moves, entityId as Entity, { remaining: 1, last_direction: 2 })
+
+      if (data.entities) {
+
+        console.log(data.entities)
         const remaining = getFirstComponentByType(data.entities?.edges, 'Moves') as Moves;
         const position = getFirstComponentByType(data.entities?.edges, 'Position') as Position;
 
-        setComponent(Moves, entityId.toString() as EntityIndex, { remaining: remaining.remaining })
-        setComponent(Position, entityId.toString() as EntityIndex, { x: position.x, y: position.y })
+        setComponent(Moves, entityId as Entity, { remaining: Number(remaining.remaining), last_direction: Number(remaining.last_direction) })
+
+        setComponent(Position, entityId as Entity, { x: position.vec?.x, y: position.vec?.y })
       }
     }
     fetchData();
