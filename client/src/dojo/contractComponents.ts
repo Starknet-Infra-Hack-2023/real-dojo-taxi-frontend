@@ -15,7 +15,7 @@ export function defineContractComponents(world: World) {
         {
           metadata: {
             name: name,
-            types: ["u8","Direction"],
+            types: ["u8", "Direction"],
           },
         }
       );
@@ -25,8 +25,10 @@ export function defineContractComponents(world: World) {
       return defineComponent(
         world,
         {
-          x: RecsType.Number,
-          y: RecsType.Number
+          vec: {
+            x: RecsType.Number,
+            y: RecsType.Number
+          }
         },
         {
           metadata: {
