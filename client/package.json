@@ -1,22 +1,23 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "create-components": "npx @dojoengine/core src/dojo/manifest.json src/dojo/contractComponents.ts"
   },
   "dependencies": {
-    "@dojoengine/core": "^0.0.17",
-    "@dojoengine/create-burner": "^0.0.18",
-    "@dojoengine/react": "^0.0.3",
-    "@dojoengine/utils": "^0.0.2",
-    "@latticexyz/recs": "^1.43.0",
-    "@latticexyz/utils": "^1.43.0",
+    "@dojoengine/core": "^0.1.26",
+    "@dojoengine/create-burner": "^0.1.26",
+    "@dojoengine/utils": "^0.1.26",
+    "@latticexyz/react": "^2.0.0-next.11",
+    "@latticexyz/recs": "^2.0.0-next.11",
+    "@latticexyz/utils": "^2.0.0-next.11",
     "ethers": "^5.7.2",
     "graphql": "^16.7.1",
     "graphql-request": "^6.1.0",

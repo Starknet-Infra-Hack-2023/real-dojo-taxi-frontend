@@ -14,22 +14,23 @@ export function createSystemCalls(
 ) {
 
     const spawn = async (signer: Account) => {
-        const entityId = parseInt(signer.address) as EntityIndex;
+
+        const entityId = signer.address.toString() as EntityIndex;
 
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: { x: 1000, y: 1000 },
+            value: { x: 10, y: 10 },
         });
 
         const movesId = uuid();
         Moves.addOverride(movesId, {
             entity: entityId,
-            value: { remaining: 100 },
+            value: { remaining: 10 },
         });
 
         try {
-            const tx = await execute(signer, "spawn", []);
+            const tx = await execute(signer, "actions", 'spawn', []);
 
             console.log(tx)
             const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
@@ -47,7 +48,7 @@ export function createSystemCalls(
 
     const move = async (signer: Account, direction: Direction) => {
 
-        const entityId = parseInt(signer.address) as EntityIndex;
+        const entityId = signer.address.toString() as EntityIndex;
 
         const positionId = uuid();
         Position.addOverride(positionId, {
@@ -62,10 +63,12 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "move", [direction]);
+            const tx = await execute(signer, "actions", "move", [direction]);
 
             console.log(tx)
             const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
+
+            console.log(receipt)
             setComponentsFromEvents(contractComponents, getEvents(receipt));
 
         } catch (e) {
@@ -86,8 +89,8 @@ export function createSystemCalls(
 }
 
 export enum Direction {
-    Left = 0,
-    Right = 1,
-    Up = 2,
-    Down = 3,
+    Left = 1,
+    Right = 2,
+    Up = 3,
+    Down = 4,
 }

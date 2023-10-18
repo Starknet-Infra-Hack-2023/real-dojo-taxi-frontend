@@ -1,6 +1,6 @@
 import { useDojo } from './DojoContext';
-import { useComponentValue } from "@dojoengine/react";
 import { Direction, } from './dojo/createSystemCalls'
+import { useComponentValue } from "@latticexyz/react";
 import { EntityIndex, setComponent } from '@latticexyz/recs';
 import { useEffect } from 'react';
 import { getFirstComponentByType } from './utils';
@@ -11,7 +11,7 @@ function App() {
     setup: {
       systemCalls: { spawn, move },
       components: { Moves, Position },
-      network: { graphSdk, call }
+      network: { graphSdk }
     },
     account: { create, list, select, account, isDeploying }
   } = useDojo();
@@ -19,9 +19,11 @@ function App() {
   // entity id - this example uses the account address as the entity id
   const entityId = account.address;
 
+  console.log(account.address)
+
   // get current component values
-  const position = useComponentValue(Position, parseInt(entityId.toString()) as EntityIndex);
-  const moves = useComponentValue(Moves, parseInt(entityId.toString()) as EntityIndex);
+  const position = useComponentValue(Position, entityId.toString() as EntityIndex);
+  const moves = useComponentValue(Moves, entityId.toString() as EntityIndex);
 
   useEffect(() => {
 
@@ -34,8 +36,8 @@ function App() {
         const remaining = getFirstComponentByType(data.entities?.edges, 'Moves') as Moves;
         const position = getFirstComponentByType(data.entities?.edges, 'Position') as Position;
 
-        setComponent(Moves, parseInt(entityId.toString()) as EntityIndex, { remaining: remaining.remaining })
-        setComponent(Position, parseInt(entityId.toString()) as EntityIndex, { x: position.x, y: position.y })
+        setComponent(Moves, entityId.toString() as EntityIndex, { remaining: remaining.remaining })
+        setComponent(Position, entityId.toString() as EntityIndex, { x: position.x, y: position.y })
       }
     }
     fetchData();
