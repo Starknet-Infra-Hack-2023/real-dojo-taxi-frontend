@@ -3,7 +3,8 @@ import { Account } from "starknet";
 import { EntityIndex, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
-import { getEvents, updatePositionWithDirection, setComponentsFromEvents } from "../utils";
+import { updatePositionWithDirection } from "../utils";
+import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -30,7 +31,13 @@ export function createSystemCalls(
 
         try {
             const tx = await execute(signer, "actions", 'spawn', []);
-            setComponentsFromEvents(contractComponents, getEvents(await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })));
+            setComponentsFromEvents(contractComponents,
+                getEvents(
+                    await signer.waitForTransaction(tx.transaction_hash,
+                        { retryInterval: 100 }
+                    )
+                )
+            );
 
         } catch (e) {
             console.log(e)

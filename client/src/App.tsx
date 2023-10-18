@@ -3,7 +3,7 @@ import { Direction, } from './dojo/createSystemCalls'
 import { useComponentValue } from "@latticexyz/react";
 import { Entity } from '@latticexyz/recs';
 import { useEffect } from 'react';
-import { setComponentsFromGraphQLEntities } from './utils';
+import { setComponentsFromGraphQLEntities } from '@dojoengine/utils';
 
 function App() {
   const {
