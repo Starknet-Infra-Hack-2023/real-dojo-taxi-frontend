@@ -13,8 +13,6 @@ export function createSystemCalls(
     { Position, Moves }: ClientComponents
 ) {
 
-    const { VITE_PUBLIC_WORLD_ADDRESS } = import.meta.env;
-
     const spawn = async (signer: Account) => {
 
         const entityId = signer.address.toString() as EntityIndex;
@@ -32,7 +30,7 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "player_actions", 'spawn', []);
+            const tx = await execute(signer, "actions", 'spawn', []);
 
             console.log(tx)
             const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
@@ -52,10 +50,6 @@ export function createSystemCalls(
 
         const entityId = signer.address.toString() as EntityIndex;
 
-        console.log("direction", direction)
-        console.log("getComponentValue", getComponentValue(Position, entityId))
-
-
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
@@ -69,7 +63,7 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "player_actions", "move", [direction]);
+            const tx = await execute(signer, "actions", "move", [direction]);
 
             console.log(tx)
             const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
