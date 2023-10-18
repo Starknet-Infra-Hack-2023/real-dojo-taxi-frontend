@@ -3,42 +3,19 @@ import { Entity, setComponent, Components, ComponentValue, Type as RecsType, } f
 import { poseidonHashMany } from "micro-starknet";
 import { Direction } from "../dojo/createSystemCalls";
 
-export function isValidArray(input: any): input is any[] {
-    return Array.isArray(input) && input != null;
-}
-
-export function getFirstComponentByType(entities: any[] | null | undefined, typename: string): any | null {
-    if (!isValidArray(entities)) return null;
-
-    for (const entity of entities) {
-        if (isValidArray(entity?.node.models)) {
-            const foundModel = entity.node.models.find((comp: any) => comp.__typename === typename);
-            if (foundModel) return foundModel;
-        }
-    }
-
-    return null;
-}
-
-export function extractAndCleanKey(entities?: any[] | null | undefined): string | null {
-    if (!isValidArray(entities) || !entities[0]?.keys) return null;
-
-    return entities[0].keys.replace(/,/g, '');
-}
-
-export function updatePositionWithDirection(direction: Direction, value: { x: number, y: number }) {
+export function updatePositionWithDirection(direction: Direction, value: { vec: { x: number, y: number } }) {
     switch (direction) {
         case Direction.Left:
-            value.x--;
+            value.vec.x--;
             break;
         case Direction.Right:
-            value.x++;
+            value.vec.x++;
             break;
         case Direction.Up:
-            value.y--;
+            value.vec.y--;
             break;
         case Direction.Down:
-            value.y++;
+            value.vec.y++;
             break;
         default:
             throw new Error("Invalid direction provided");
@@ -101,14 +78,8 @@ export function setComponentFromEvent(components: Components, eventData: string[
     const values = eventData.slice(index, index + numberOfValues);
 
     // create component object from values with schema
-    const componentValues = Object.keys(component.schema).reduce((acc: ComponentValue, key, index) => {
-        const value = values[index];
-        const parsedValue = parseComponentValue(value, component.schema[key])
-        acc[key] = parsedValue
-        return acc;
-    }, {});
-
-    console.log(componentValues)
+    const valuesIndex = 0;
+    const componentValues = decodeComponent(component.schema, values, valuesIndex);
 
     console.log(componentName, entityIndex, componentValues)
 
@@ -134,6 +105,19 @@ export function parseComponentValue(value: string, type: RecsType) {
         default:
             return value
     }
+}
+
+
+function decodeComponent(schema: any, values: string[], valuesIndex: number): any {
+    return Object.keys(schema).reduce((acc: any, key) => {
+        if (typeof schema[key] === 'object' && !schema[key].type) {
+            acc[key] = decodeComponent(schema[key], values, valuesIndex);
+        } else {
+            acc[key] = parseComponentValue(values[valuesIndex], schema[key]);
+            valuesIndex++;
+        }
+        return acc;
+    }, {});
 }
 
 /**
@@ -195,29 +179,44 @@ export function setComponentFromGraphQLEntity(components: Components, entityEdge
         }, {});
 
         console.log(componentValues)
-
-        console.log(componentName, entityIndex, componentValues);
-
         setComponent(component, entityIndex, componentValues);
     });
 }
 
-export function parseComponentValueFromGraphQLEntity(value: any, type: RecsType) {
+export function parseComponentValueFromGraphQLEntity(value: any, type: RecsType | object): any {
     if (value === undefined || value === null) return value;
 
+    // Check if type is an object (i.e., a nested schema)
+    if (typeof type === 'object' && type !== null) {
+        const parsedObject: any = {};
+        for (const key in type) {
+            parsedObject[key] = parseComponentValueFromGraphQLEntity(value[key], type[key]);
+        }
+        return parsedObject;
+    }
+
+    // For primitive types
     switch (type) {
         case RecsType.Boolean:
             return !!value;
         case RecsType.Number:
-            // Check if the value is a string, if so, return 0
             if (typeof value === "string") {
                 return 0;
             }
-            // Otherwise, ensure the value is a valid number
             return !isNaN(Number(value)) ? Number(value) : value;
         case RecsType.BigInt:
             return BigInt(value);
         default:
             return value;
     }
+}
+
+// A dictionary to map custom types to their decoder functions
+const customDecoders: { [type: string]: (data: string[]) => any } = {
+    'Vec2': parseVec2,
+    // add other custom types and their parsers here
+};
+
+function parseVec2(data: string[]): [bigint, bigint] {
+    return [BigInt(data[0]), BigInt(data[1])];
 }

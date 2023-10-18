@@ -1,17 +1,16 @@
 import { useDojo } from './DojoContext';
 import { Direction, } from './dojo/createSystemCalls'
 import { useComponentValue } from "@latticexyz/react";
-import { Entity, setComponent } from '@latticexyz/recs';
+import { Entity } from '@latticexyz/recs';
 import { useEffect } from 'react';
-import { getFirstComponentByType, setComponentsFromGraphQLEntities } from './utils';
-import { Moves, Position } from './generated/graphql';
+import { setComponentsFromGraphQLEntities } from './utils';
 
 function App() {
   const {
     setup: {
       systemCalls: { spawn, move },
       components,
-      network: { graphSdk }
+      network: { graphSdk, contractComponents }
     },
     account: { create, list, select, account, isDeploying }
   } = useDojo();
@@ -28,31 +27,21 @@ function App() {
 
   // use graphql to current state data
   useEffect(() => {
-
-
-
     if (!entityId) return;
 
     const fetchData = async () => {
-      const { data } = await getEntities()
-
-      console.log(data)
-
-      if (data.entities) {
-
-        console.log(data.entities)
-        const remaining = getFirstComponentByType(data.entities?.edges, 'Moves') as Moves;
-        const position = getFirstComponentByType(data.entities?.edges, 'Position') as Position;
-
-        setComponentsFromGraphQLEntities(components, data.entities?.edges)
-
-        // setComponent(Moves, entityId as Entity, { remaining: BigInt(remaining.remaining), last_direction: BigInt(remaining.last_direction) })
-
-        // setComponent(Position, entityId as EntityIndex, { x: position.vec?.x, y: position.vec?.y })
+      try {
+        const { data } = await getEntities();
+        if (data && data.entities) {
+          setComponentsFromGraphQLEntities(contractComponents, data.entities.edges);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    }
+    };
+
     fetchData();
-  }, [account.address]);
+  }, [entityId, contractComponents]);
 
 
   return (
@@ -63,13 +52,13 @@ function App() {
         <select onChange={e => select(e.target.value)}>
           {list().map((account, index) => {
             return <option value={account.address} key={index}>{account.address}</option>
-          })}
+          })}i
         </select>
       </div>
       <div className="card">
         <button onClick={() => spawn(account)}>Spawn</button>
         <div>Moves Left: {moves ? `${moves['remaining']}` : 'Need to Spawn'}</div>
-        <div>Position: {position ? `${position['x']}, ${position['y']}` : 'Need to Spawn'}</div>
+        <div>Position: {position ? `${position.vec['x']}, ${position.vec['y']}` : 'Need to Spawn'}</div>
       </div>
       <div className="card">
         <button onClick={() => move(account, Direction.Up)}>Move Up</button> <br />

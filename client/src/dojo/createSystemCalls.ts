@@ -4,7 +4,6 @@ import { EntityIndex, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { getEvents, updatePositionWithDirection, setComponentsFromEvents } from "../utils";
-// import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -31,10 +30,7 @@ export function createSystemCalls(
 
         try {
             const tx = await execute(signer, "actions", 'spawn', []);
-
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
-            setComponentsFromEvents(contractComponents, getEvents(receipt));
+            setComponentsFromEvents(contractComponents, getEvents(await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })));
 
         } catch (e) {
             console.log(e)
@@ -47,13 +43,12 @@ export function createSystemCalls(
     };
 
     const move = async (signer: Account, direction: Direction) => {
-
         const entityId = signer.address.toString() as EntityIndex;
 
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId) as any),
+            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId)),
         });
 
         const movesId = uuid();
@@ -64,12 +59,13 @@ export function createSystemCalls(
 
         try {
             const tx = await execute(signer, "actions", "move", [direction]);
-
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
-
-            console.log(receipt)
-            setComponentsFromEvents(contractComponents, getEvents(receipt));
+            setComponentsFromEvents(contractComponents,
+                getEvents(
+                    await signer.waitForTransaction(tx.transaction_hash,
+                        { retryInterval: 100 }
+                    )
+                )
+            );
 
         } catch (e) {
             console.log(e)
