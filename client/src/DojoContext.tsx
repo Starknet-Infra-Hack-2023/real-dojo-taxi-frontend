@@ -8,7 +8,7 @@ type Context = {
     account: {
         create: () => void;
         list: () => any[];
-        get: (id: string) => any;
+        get: (id: string) => Account;
         select: (id: string) => void;
         account: Account;
         masterAccount: Account;
@@ -36,7 +36,7 @@ export const DojoProvider = ({ children, value }: Props) => {
             new RpcProvider({
                 nodeUrl: VITE_PUBLIC_NODE_URL!,
             }),
-        [],
+        [VITE_PUBLIC_NODE_URL],
     );
 
     const masterAddress = VITE_PUBLIC_MASTER_ADDRESS!;
@@ -54,18 +54,18 @@ export const DojoProvider = ({ children, value }: Props) => {
 
     const selectedAccount = useMemo(() => {
         return account || masterAccount;
-    }, [account])
+    }, [account, masterAccount])
 
     const contextValue: Context = {
-        setup: value,    // the provided setup
+        setup: value,
         account: {
-            create,        // create a new account
-            list,          // list all accounts
-            get,           // get an account by id
-            select,        // select an account by id
-            account: selectedAccount,       // the selected account
-            masterAccount, // the master account
-            isDeploying,   // is the account being deployed
+            create,
+            list,
+            get,
+            select,
+            account: selectedAccount,
+            masterAccount,
+            isDeploying,
             clear
         }
     }
