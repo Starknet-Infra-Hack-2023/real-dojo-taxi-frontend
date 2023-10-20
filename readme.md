@@ -46,10 +46,7 @@ cd dojo-starter && katana --disable-fee
 cd dojo-starter && sozo build && sozo migrate
 
 // Basic Auth - This will allow burner Accounts to interact with the contracts
-sozo auth writer Position move
-sozo auth writer Position spawn
-sozo auth writer Moves move
-sozo auth writer Moves spawn
+sh ./dojo-starter/scripts/default_auth.sh
 ```
 
 3. **Terminal 3 - Client**:
