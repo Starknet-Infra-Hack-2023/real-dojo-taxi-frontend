@@ -1,22 +1,22 @@
-import { useDojo } from './DojoContext';
-import { Direction, } from './dojo/createSystemCalls'
+import { useDojo } from "./DojoContext";
 import { useComponentValue } from "@latticexyz/react";
-import { Entity } from '@latticexyz/recs';
-import { useEffect } from 'react';
-import { setComponentsFromGraphQLEntities } from '@dojoengine/utils';
+import { Entity } from "@latticexyz/recs";
+import { useEffect } from "react";
+import { setComponentsFromGraphQLEntities } from "@dojoengine/utils";
+import { Direction } from "./utils";
 
 function App() {
   const {
     setup: {
       systemCalls: { spawn, move },
       components,
-      network: { graphSdk, contractComponents }
+      network: { graphSdk, contractComponents },
     },
-    account: { create, list, select, account, isDeploying }
+    account: { create, list, select, account, isDeploying, clear },
   } = useDojo();
 
   // extract query
-  const { getEntities } = graphSdk()
+  const { getEntities } = graphSdk();
 
   // entity id - this example uses the account address as the entity id
   const entityId = account.address.toString();
@@ -24,8 +24,6 @@ function App() {
   // get current component values
   const position = useComponentValue(components.Position, entityId as Entity);
   const moves = useComponentValue(components.Moves, entityId as Entity);
-
-  console.log("position", position);
 
   // use graphql to current state data
   useEffect(() => {
@@ -35,7 +33,10 @@ function App() {
       try {
         const { data } = await getEntities();
         if (data && data.entities) {
-          setComponentsFromGraphQLEntities(contractComponents, data.entities.edges);
+          setComponentsFromGraphQLEntities(
+            contractComponents,
+            data.entities.edges
+          );
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -45,27 +46,48 @@ function App() {
     fetchData();
   }, [entityId, contractComponents]);
 
-
   return (
     <>
-      <button onClick={create}>{isDeploying ? "deploying burner" : "create burner"}</button>
+      <div>
+        <button onClick={create}>
+          {isDeploying ? "deploying burner" : "create burner"}
+        </button>
+        <button onClick={clear}>clear burners</button>
+      </div>
+
       <div className="card">
         select signer:{" "}
-        <select onChange={e => select(e.target.value)}>
+        <select onChange={(e) => select(e.target.value)}>
           {list().map((account, index) => {
-            return <option value={account.address} key={index}>{account.address}</option>
-          })}i
+            return (
+              <option value={account.address} key={index}>
+                {account.address}
+              </option>
+            );
+          })}
+          i
         </select>
       </div>
       <div className="card">
         <button onClick={() => spawn(account)}>Spawn</button>
-        <div>Moves Left: {moves ? `${moves['remaining']}` : 'Need to Spawn'}</div>
-        <div>Position: {position ? `${position.vec['x']}, ${position.vec['y']}` : 'Need to Spawn'}</div>
+        <div>
+          Moves Left: {moves ? `${moves["remaining"]}` : "Need to Spawn"}
+        </div>
+        <div>
+          Position:{" "}
+          {position
+            ? `${position.vec["x"]}, ${position.vec["y"]}`
+            : "Need to Spawn"}
+        </div>
       </div>
       <div className="card">
-        <button onClick={() => move(account, Direction.Up)}>Move Up</button> <br />
+        <button onClick={() => move(account, Direction.Up)}>Move Up</button>{" "}
+        <br />
         <button onClick={() => move(account, Direction.Left)}>Move Left</button>
-        <button onClick={() => move(account, Direction.Right)}>Move Right</button> <br />
+        <button onClick={() => move(account, Direction.Right)}>
+          Move Right
+        </button>{" "}
+        <br />
         <button onClick={() => move(account, Direction.Down)}>Move Down</button>
       </div>
     </>

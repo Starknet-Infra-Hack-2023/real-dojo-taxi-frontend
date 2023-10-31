@@ -5,34 +5,32 @@ import { defineComponent, Type as RecsType, World } from "@latticexyz/recs";
 export function defineContractComponents(world: World) {
   return {
     Moves: (() => {
-      const name = "Moves";
       return defineComponent(
         world,
         {
+          player: RecsType.String,
           remaining: RecsType.Number,
           last_direction: RecsType.Number,
         },
         {
           metadata: {
-            name: name,
-            types: ["u8", "Direction"],
+            name: "Moves",
+            types: ["Direction"],
           },
         }
       );
     })(),
     Position: (() => {
-      const name = "Position";
       return defineComponent(
         world,
         {
-          vec: {
-            x: RecsType.Number,
-            y: RecsType.Number
-          }
+          player: RecsType.String,
+          //@ts-ignore
+          vec: { x: RecsType.Number, y: RecsType.Number },
         },
         {
           metadata: {
-            name: name,
+            name: "Position",
             types: ["Vec2"],
           },
         }
