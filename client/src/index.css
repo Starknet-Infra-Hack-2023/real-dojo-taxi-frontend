@@ -118,3 +118,7 @@ button:focus-visible {
 canvas {
   display: block;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
