@@ -21,6 +21,15 @@ const Game = () => {
     const demoGame = new Contract(demogameAbi, DEMO_GAME_ADDRESS, provider);
     const demoGameContract = new Contract(demogameAbi, DEMO_GAME_ADDRESS, provider);
     demoGameContract.connect(account);
+    
+
+    const submitAction= async (actionValue: number) => {
+        const myCall = demoGameContract.populate("action", [actionValue]);
+        const res = await demoGameContract.action(myCall.calldata);
+        await provider.waitForTransaction(res.transaction_hash);
+        console.log("action submitted",actionValue);
+    }
+    
 
     const gameConfig = {
         type: Phaser.AUTO,
@@ -217,9 +226,10 @@ const Game = () => {
                     px-1
                     "
                 onClick={()=>{
-                        // gameSceneLoaded? 
-                        // gamescene?.moveTaxi("down")
-                        // : null;
+                        gameSceneLoaded? 
+                        gamescene?.moveTaxi("down")
+                        : null;
+                        //submitAction(1);
                     }}
                 >Down</button>
                 </div>

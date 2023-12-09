@@ -6,6 +6,11 @@ import { createAnims } from './animations/CreateAnims';
 import q_json from './../ml/q.json';
 import { publishPhaserEvent } from './EventsCenter';
 
+
+import { Contract, RpcProvider, uint256, Account } from 'starknet';
+import { DEMO_GAME_ADDRESS } from '../constants';
+import demogameAbi from '../constants/abi/demogame.json';
+
 class GameScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
     ground!: Phaser.Tilemaps.TilemapLayer
@@ -39,6 +44,10 @@ class GameScene extends Phaser.Scene {
     useStarkContract = false;
     usedojoWorld = false;
     isMoving = false;
+
+    provider: RpcProvider;
+    account: Account;
+    demoGameContract: Contract;
 
     constructor() {
         super('GameScene');
@@ -151,7 +160,7 @@ class GameScene extends Phaser.Scene {
 
         });
 
-        this.input.keyboard.on('keydown-S', () => {
+        this.input.keyboard.on('keydown-C', () => {
             //console.log("S pressed");
             this.toggleUseContract();
         });
@@ -160,6 +169,14 @@ class GameScene extends Phaser.Scene {
             //console.log("W pressed");
             this.toggleUseDojoWorld();
         });
+
+
+        this.provider = new RpcProvider({
+            nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL!,
+        });
+        this.account = new Account(this.provider, import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS!, import.meta.env.VITE_PUBLIC_DEMO_MASTER_PRIVATE_KEY!);
+        this.demoGameContract = new Contract(demogameAbi, DEMO_GAME_ADDRESS, this.provider);
+        this.demoGameContract.connect(this.account);
 
         publishPhaserEvent("gameloaded", "no data")
     }
@@ -190,7 +207,7 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    moveTaxi(direction: string) {
+    async moveTaxi(direction: string) {
         if (this.isMoving){
             console.log("still moving!")
             return;
@@ -198,7 +215,27 @@ class GameScene extends Phaser.Scene {
 
         this.isMoving = true;
         this.gridEngine.move("taxi1", direction);
+        
+        if (this.useStarkContract){
+            direction=="down" ?
+                await this.submitAction(0) :
+            direction=="up" ?
+                await this.submitAction(1) :
+            direction=="right" ?
+                await this.submitAction(2) :
+            direction=="left" ?
+                await this.submitAction(3) :
+                null;
+        }
+
         this.isMoving = false;
+    }
+
+    async submitAction(actionValue: number) {
+        const myCall = this.demoGameContract.populate("action", [actionValue]);
+        const res = await this.demoGameContract.action(myCall.calldata);
+        await this.provider.waitForTransaction(res.transaction_hash);
+        console.log("action submitted",actionValue);
     }
 
     resetGame(){
@@ -309,7 +346,7 @@ class GameScene extends Phaser.Scene {
         return config;
     }
 
-    pickupPassenger() {
+    async pickupPassenger() {
         if (this.isMoving){
             console.log("still moving!")
             return;
@@ -332,10 +369,14 @@ class GameScene extends Phaser.Scene {
             console.log("passenger picked up!");
         }
 
+        if (this.useStarkContract){
+            await this.submitAction(4);
+        }
+
         this.isMoving = false;
     }
 
-    dropOffPassenger() {
+    async dropOffPassenger() {
         if (this.isMoving){
             console.log("still moving!")
             return false;
@@ -352,26 +393,33 @@ class GameScene extends Phaser.Scene {
         if(this.passengerInTaxi && tileXY.x == tileXY3.x && tileXY.y == tileXY3.y) {
             this.passengerInTaxi = false;
             console.log("passenger dropped off!");
+            if (this.useStarkContract){
+                await this.submitAction(5);
+            }
 
             // here resets game
             console.log("game resetting...")
             this.resetGame();
-
             this.isMoving = false;
             return true;
         } else if (!this.passengerInTaxi) {
             console.log("No passenger in taxi!");
+            if (this.useStarkContract){
+                this.submitAction(5);
+            }
             this.isMoving = false;
             return false;
         } else {
             console.log("Dropped off at wrong destination!");
+            if (this.useStarkContract){
+                this.submitAction(5);
+            }
             this.isMoving = false;
             return false;
         }
     }
 
     update(t: number, dt: number) {
-
         if(!this.isMoving) {
             if (this.cursors.left.isDown) {
                 this.moveTaxi("left");
