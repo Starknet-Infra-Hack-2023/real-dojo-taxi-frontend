@@ -165,7 +165,7 @@ const Game = () => {
                     "
                 onClick={()=>{
                         gameSceneLoaded? 
-                        gamescene?.gridEngine.move("taxi1", "left")
+                        gamescene?.moveTaxi("left")
                         : null;
                     }}
                 >Left</button>
@@ -179,7 +179,7 @@ const Game = () => {
                     "
                 onClick={()=>{
                         gameSceneLoaded? 
-                        gamescene?.gridEngine.move("taxi1", "right")
+                        gamescene?.moveTaxi("right")
                         : null;
                     }}
                 >Right</button>
@@ -193,7 +193,7 @@ const Game = () => {
                     "
                 onClick={()=>{
                         gameSceneLoaded? 
-                        gamescene?.gridEngine.move("taxi1", "up")
+                        gamescene?.moveTaxi("up")
                         : null;
                     }}
                 >Up</button>
@@ -207,7 +207,7 @@ const Game = () => {
                     "
                 onClick={()=>{
                         gameSceneLoaded? 
-                        gamescene?.gridEngine.move("taxi1", "down")
+                        gamescene?.moveTaxi("down")
                         : null;
                     }}
                 >Down</button>

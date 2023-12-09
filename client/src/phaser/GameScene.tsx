@@ -184,9 +184,13 @@ class GameScene extends Phaser.Scene {
             if(action_string == "dropoff") {
                 this.dropOffPassenger();
             } else {
-                this.gridEngine.move("taxi1", action_string);
+                this.moveTaxi(action_string);
             }
         }
+    }
+
+    moveTaxi(direction: string) {
+        this.gridEngine.move("taxi1", direction);
     }
 
     resetGame(){
@@ -340,13 +344,13 @@ class GameScene extends Phaser.Scene {
 
     update(t: number, dt: number) {
         if (this.cursors.left.isDown) {
-            this.gridEngine.move("taxi1", "left");
+            this.moveTaxi("left");
         } else if (this.cursors.right.isDown) {
-            this.gridEngine.move("taxi1", "right");
+            this.moveTaxi("right");
         } else if (this.cursors.up.isDown) {
-            this.gridEngine.move("taxi1", "up");
+            this.moveTaxi("up");
         } else if (this.cursors.down.isDown) {
-            this.gridEngine.move("taxi1", "down");
+            this.moveTaxi("down");
         }
 
         this.timer += dt;
