@@ -38,6 +38,7 @@ class GameScene extends Phaser.Scene {
     timer = 0;
     useStarkContract = false;
     usedojoWorld = false;
+    isMoving = false;
 
     constructor() {
         super('GameScene');
@@ -190,7 +191,14 @@ class GameScene extends Phaser.Scene {
     }
 
     moveTaxi(direction: string) {
+        if (this.isMoving){
+            console.log("still moving!")
+            return;
+        }
+
+        this.isMoving = true;
         this.gridEngine.move("taxi1", direction);
+        this.isMoving = false;
     }
 
     resetGame(){
@@ -302,6 +310,13 @@ class GameScene extends Phaser.Scene {
     }
 
     pickupPassenger() {
+        if (this.isMoving){
+            console.log("still moving!")
+            return;
+        }
+
+        this.isMoving = true;
+
         const taxiPos = this.player1.getCenter();
         const tileXY = this.ground.getTileAtWorldXY(taxiPos.x, taxiPos.y);
 
@@ -316,9 +331,18 @@ class GameScene extends Phaser.Scene {
             //this.gridEngine.removeCharacter("customer1");
             console.log("passenger picked up!");
         }
+
+        this.isMoving = false;
     }
 
     dropOffPassenger() {
+        if (this.isMoving){
+            console.log("still moving!")
+            return false;
+        }
+
+        this.isMoving = true;
+
         const taxiPos = this.player1.getCenter();
         const tileXY = this.ground.getTileAtWorldXY(taxiPos.x, taxiPos.y);
 
@@ -332,25 +356,32 @@ class GameScene extends Phaser.Scene {
             // here resets game
             console.log("game resetting...")
             this.resetGame();
+
+            this.isMoving = false;
             return true;
         } else if (!this.passengerInTaxi) {
             console.log("No passenger in taxi!");
+            this.isMoving = false;
             return false;
         } else {
             console.log("Dropped off at wrong destination!");
+            this.isMoving = false;
             return false;
         }
     }
 
     update(t: number, dt: number) {
-        if (this.cursors.left.isDown) {
-            this.moveTaxi("left");
-        } else if (this.cursors.right.isDown) {
-            this.moveTaxi("right");
-        } else if (this.cursors.up.isDown) {
-            this.moveTaxi("up");
-        } else if (this.cursors.down.isDown) {
-            this.moveTaxi("down");
+
+        if(!this.isMoving) {
+            if (this.cursors.left.isDown) {
+                this.moveTaxi("left");
+            } else if (this.cursors.right.isDown) {
+                this.moveTaxi("right");
+            } else if (this.cursors.up.isDown) {
+                this.moveTaxi("up");
+            } else if (this.cursors.down.isDown) {
+                this.moveTaxi("down");
+            }
         }
 
         this.timer += dt;

@@ -4,9 +4,12 @@ import { addressShortener } from '../../utils';
 //import { ClickWrapper } from '../../ui/clickWrapper';
 import { ETH_ADDRESS, LORDS_ADDRESS } from '../../constants';
 import erc20abi from '../../constants/abi/erc20.json';
-import { Contract, RpcProvider, uint256 } from 'starknet';
+import { Contract, RpcProvider, uint256, Account } from 'starknet';
+import { ethers } from 'ethers';
 
 export const Navbar = () => {
+
+    const [useDemoWallet, setUseDemoWallet] = useState(true);
     
     const {
         account: {
@@ -18,13 +21,17 @@ export const Navbar = () => {
             isDeploying
         }
     } = useDojo();
-
-    const [ethBalance, setEthBalance] = useState("0");
-    const [lordsBalance, setLordsBalance] = useState("0");
+    
+    const [ethBalance, setEthBalance] = useState(0.00);
+    const [lordsBalance, setLordsBalance] = useState(0.00);
 
     const provider = new RpcProvider({
         nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL!,
     });
+    const masterAccount = new Account(provider, import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS!, import.meta.env.VITE_PUBLIC_DEMO_MASTER_PRIVATE_KEY!);
+    
+    const demoAccount = useDemoWallet ? masterAccount: account; // see if use which wallet
+
     const ethERC20 = new Contract(erc20abi, ETH_ADDRESS, provider);
     const lordsERC20 = new Contract(erc20abi, LORDS_ADDRESS, provider);
 
@@ -34,17 +41,24 @@ export const Navbar = () => {
         console.log("burner created")
     }, [create, list])
 
+    const toggleUseDemoWallet = useCallback(() => {
+        setUseDemoWallet(!useDemoWallet)
+    }, [useDemoWallet])
+
     useEffect(() => {
-        if (!account) return;
+        // get correct account
+        //get(import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS);
+
+        if (!demoAccount) return;
 
         async function getBalance(erc20:Contract, setter:React.Dispatch<React.SetStateAction<string>>) {
-            erc20.connect(account);
-            const walletbalance = await erc20.balanceOf(account.address);
-            setter(uint256.uint256ToBN(walletbalance.balance).toString())
+            erc20.connect(demoAccount);
+            const walletbalance = await erc20.balanceOf(demoAccount.address);
+            setter(parseFloat(ethers.utils.formatEther(uint256.uint256ToBN(walletbalance.balance))).toFixed(4))
         }
         getBalance(ethERC20, setEthBalance);
         getBalance(lordsERC20, setLordsBalance);
-    }, [account, list])
+    }, [demoAccount, list])
 
     return (
         <nav className="fixed z-50 w-full bg-transparent py-5
@@ -96,10 +110,11 @@ export const Navbar = () => {
                     2xl:font-bold
                     text-xs 2xl:text-base
                 "
+
                 > { 
                 
                 list().length > 0 ?
-                addressShortener(account.address) :
+                addressShortener(demoAccount.address) :
                 "Create Burner"
                 } </button>
             </div>

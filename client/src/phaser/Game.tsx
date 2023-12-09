@@ -4,12 +4,23 @@ import GameScene from './GameScene';
 import { GridEngine, GridEngineHeadless } from "grid-engine";
 import {subscribePhaserEvent, unsubscribePhaserEvent} from '../phaser/EventsCenter';
 import { set } from 'mobx';
+import { Contract, RpcProvider, uint256, Account } from 'starknet';
+import { DEMO_GAME_ADDRESS } from '../constants';
+import demogameAbi from '../constants/abi/demogame.json';
 
 const Game = () => {
     const [gameSceneLoaded, setGameSceneLoaded] = useState(false);
     const [ai_paused, setAi_paused] = useState(true);
     const [useStarkContract, setUseStarkContract] = useState(false);
     const [useDojoWorld, setUseDojoWorld] = useState(false);
+
+    const provider = new RpcProvider({
+        nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL!,
+    });
+    const account = new Account(provider, import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS!, import.meta.env.VITE_PUBLIC_DEMO_MASTER_PRIVATE_KEY!);
+    const demoGame = new Contract(demogameAbi, DEMO_GAME_ADDRESS, provider);
+    const demoGameContract = new Contract(demogameAbi, DEMO_GAME_ADDRESS, provider);
+    demoGameContract.connect(account);
 
     const gameConfig = {
         type: Phaser.AUTO,
@@ -206,9 +217,9 @@ const Game = () => {
                     px-1
                     "
                 onClick={()=>{
-                        gameSceneLoaded? 
-                        gamescene?.moveTaxi("down")
-                        : null;
+                        // gameSceneLoaded? 
+                        // gamescene?.moveTaxi("down")
+                        // : null;
                     }}
                 >Down</button>
                 </div>

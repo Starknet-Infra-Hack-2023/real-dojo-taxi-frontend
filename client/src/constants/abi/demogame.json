@@ -1,0 +1,103 @@
+[
+    {
+      "type": "impl",
+      "name": "ActionContractImpl",
+      "interface_name": "contracts::Action::IActionContract"
+    },
+    {
+      "type": "struct",
+      "name": "core::integer::u256",
+      "members": [
+        {
+          "name": "low",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "high",
+          "type": "core::integer::u128"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "contracts::Action::IActionContract",
+      "items": [
+        {
+          "type": "function",
+          "name": "action",
+          "inputs": [
+            {
+              "name": "action",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "constructor",
+      "name": "constructor",
+      "inputs": []
+    },
+    {
+      "type": "enum",
+      "name": "contracts::Action::ActionState",
+      "variants": [
+        {
+          "name": "DOWN",
+          "type": "()"
+        },
+        {
+          "name": "UP",
+          "type": "()"
+        },
+        {
+          "name": "RIGHT",
+          "type": "()"
+        },
+        {
+          "name": "LEFT",
+          "type": "()"
+        },
+        {
+          "name": "PICKUP",
+          "type": "()"
+        },
+        {
+          "name": "DROPOFF",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "contracts::Action::ActionContract::ActionStateChange",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "state",
+          "type": "contracts::Action::ActionState",
+          "kind": "data"
+        },
+        {
+          "name": "action",
+          "type": "core::integer::u256",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "contracts::Action::ActionContract::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "ActionStateChange",
+          "type": "contracts::Action::ActionContract::ActionStateChange",
+          "kind": "nested"
+        }
+      ]
+    }
+  ]

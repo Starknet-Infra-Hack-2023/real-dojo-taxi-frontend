@@ -39,9 +39,12 @@ export const DojoProvider = ({ children, value }: DojoProviderProps) => {
     []
   );
 
-  const masterAddress = import.meta.env.VITE_PUBLIC_MASTER_ADDRESS;
-  const privateKey = import.meta.env.VITE_PUBLIC_MASTER_PRIVATE_KEY;
-  const accountClassHash = import.meta.env.VITE_PUBLIC_ACCOUNT_CLASS_HASH;
+  // const masterAddress = import.meta.env.VITE_PUBLIC_MASTER_ADDRESS;
+  // const privateKey = import.meta.env.VITE_PUBLIC_MASTER_PRIVATE_KEY;
+  const masterAddress = import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS;
+  const privateKey = import.meta.env.VITE_PUBLIC_DEMO_MASTER_PRIVATE_KEY;
+  //const accountClassHash = import.meta.env.VITE_PUBLIC_ACCOUNT_CLASS_HASH;
+  const accountClassHash = import.meta.env.VITE_PUBLIC_DEMO_ACCOUNT_CLASS_HASH
   const masterAccount = useMemo(
     () => new Account(rpcProvider, masterAddress, privateKey),
     [rpcProvider, masterAddress, privateKey]
