@@ -4,6 +4,7 @@ import Passenger from './characters/Passenger';
 import Destination from './characters/Destination';
 import { createAnims } from './animations/CreateAnims';
 import q_json from './../ml/q.json';
+import { publishPhaserEvent } from './EventsCenter';
 
 class GameScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
@@ -146,6 +147,8 @@ class GameScene extends Phaser.Scene {
             this.pauseUnpauseAI();
 
         });
+
+        publishPhaserEvent("gameloaded", "no data")
     }
 
     ai_move(){
@@ -210,6 +213,7 @@ class GameScene extends Phaser.Scene {
         // }else {
         //     this.scene.resume();
         // }
+        publishPhaserEvent("pauseunpause_ai", this.ai_pause)
     }
     getQState({taxiRow, taxiCol, passengerCode, destinationCode}) {
         // total states: 5 * 5 * 5 * 4 = 500
