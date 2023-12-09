@@ -95,7 +95,7 @@ const Game = () => {
                 flex flex-col
                 h-3/5">
                 <button className={`rounded-md 
-                    ${ai_paused? "bg-red-800/80":"bg-green-500"}
+                    ${!ai_paused? "bg-orange-500":"bg-green-500"}
                     text-white
                     font-medium
                     px-3 h-full
@@ -112,7 +112,7 @@ const Game = () => {
                 
                 <button className="
                     rounded-md 
-                    bg-orange-500 text-white
+                    bg-yellow-500 text-white
                     font-medium
                     px-3 h-full
                     my-1
