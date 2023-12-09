@@ -39,7 +39,6 @@ const Game = () => {
     const game = usePhaserGame(gameConfig);
     return (
         <div className="
-        mt-8
         border-2 border-orange-600 rounded-lg
         overflow-hidden
         w-[480px] h-[480px]" id="taxi-game"></div>
