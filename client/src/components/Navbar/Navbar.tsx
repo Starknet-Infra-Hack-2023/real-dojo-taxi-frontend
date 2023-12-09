@@ -47,25 +47,29 @@ export const Navbar = () => {
     }, [account, list])
 
     return (
-        <nav className="fixed z-50 w-full bg-transparent py-7
+        <nav className="fixed z-50 w-full bg-transparent py-5
         ">
             {/* <ClickWrapper> */}
-            <div className="w-[50vw] container mx-auto flex items-center justify-center h-16 text-gray-900
+            <div className="w-[50vw] container mx-auto flex flex-row 
+                items-center justify-center h-16 text-gray-900
+                border rounded-lg border-gray-600/80
+                py-8
             ">
                 
                 <div className="flex flex-row justify-start items-center
-                border rounded-lg border-gray-700/30 bg-white/60
-                ">
+                mx-1
+                ">  
+                    <img src="/starkicon.png" alt="logo" className="w-14 h-14 mx-2"/>
                     <img src="/taxiRight.png" alt="logo" className="w-16 h-16 mx-2"/>
                     <span className="mx-2
                     font-bold
                     ">Stark Taxi & Gas</span>
+                    <img src="/cuteRobot2.png" alt="logo" className="w-14 h-14 mx-2"/>
                 </div>
                 
                 <div className="
                     bg-[#DBB874]
                     rounded-lg mx-1
-                    ml-auto
                     px-4 py-1.5 font-bold">
                         $LORDS: {lordsBalance}</div>
                 <div className="
