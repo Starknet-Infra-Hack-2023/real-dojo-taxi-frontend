@@ -36,6 +36,8 @@ class GameScene extends Phaser.Scene {
     scalefactor = 3
     ai_pause = true
     timer = 0;
+    useStarkContract = false;
+    usedojoWorld = false;
 
     constructor() {
         super('GameScene');
@@ -128,14 +130,14 @@ class GameScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown-D', () => {
-            console.log("D pressed");
+            //console.log("D pressed");
             this.dropOffPassenger();
         });
 
         
 
         this.input.keyboard.on('keydown-R', () => {
-            console.log("R pressed");
+            //console.log("R pressed");
             this.resetGame();
         });
 
@@ -143,9 +145,19 @@ class GameScene extends Phaser.Scene {
 
         
         this.input.keyboard.on('keydown-P', () => {
-            console.log("P pressed");
+            //console.log("P pressed");
             this.pauseUnpauseAI();
 
+        });
+
+        this.input.keyboard.on('keydown-S', () => {
+            //console.log("S pressed");
+            this.toggleUseContract();
+        });
+
+        this.input.keyboard.on('keydown-W', () => {
+            //console.log("W pressed");
+            this.toggleUseDojoWorld();
         });
 
         publishPhaserEvent("gameloaded", "no data")
@@ -215,6 +227,19 @@ class GameScene extends Phaser.Scene {
         // }
         publishPhaserEvent("pauseunpause_ai", this.ai_pause)
     }
+
+    toggleUseContract(){
+        this.useStarkContract = !this.useStarkContract;
+        console.log("useStarkContract: ", this.useStarkContract);
+        publishPhaserEvent("useStarkContract", this.useStarkContract)
+    }
+
+    toggleUseDojoWorld(){
+        this.usedojoWorld = !this.usedojoWorld;
+        console.log("usedojoWorld: ", this.usedojoWorld);
+        publishPhaserEvent("usedojoWorld", this.usedojoWorld)
+    }
+
     getQState({taxiRow, taxiCol, passengerCode, destinationCode}) {
         // total states: 5 * 5 * 5 * 4 = 500
         const q_state = (taxiRow*100) + (taxiCol*20) + (passengerCode*4) + destinationCode;

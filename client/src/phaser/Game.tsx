@@ -8,6 +8,8 @@ import { set } from 'mobx';
 const Game = () => {
     const [gameSceneLoaded, setGameSceneLoaded] = useState(false);
     const [ai_paused, setAi_paused] = useState(true);
+    const [useStarkContract, setUseStarkContract] = useState(false);
+    const [useDojoWorld, setUseDojoWorld] = useState(false);
 
     const gameConfig = {
         type: Phaser.AUTO,
@@ -44,10 +46,6 @@ const Game = () => {
 
     const gamescene = gameSceneLoaded ? game?.scene?.keys?.GameScene : null;
 
-    console.log("gamescene:")
-    console.log(gamescene)
-    console.log("ai pause: ", gamescene?.ai_pause);
-
     //suscribe to game events
     useEffect(() => {
         subscribePhaserEvent("gameloaded", () => {
@@ -61,9 +59,19 @@ const Game = () => {
             setAi_paused(e?.detail);
         });
 
+        subscribePhaserEvent("useStarkContract", (e) => {
+            setUseStarkContract(e?.detail);
+        });
+
+        subscribePhaserEvent("usedojoWorld", (e) => {
+            setUseDojoWorld(e?.detail);
+        });
+
         return ()=>{
             unsubscribePhaserEvent("gameloaded", ()=>{});
             unsubscribePhaserEvent("pauseunpause_ai", ()=>{});
+            unsubscribePhaserEvent("useStarkContract", ()=>{});
+            unsubscribePhaserEvent("usedojoWorld", ()=>{});
         }
     }, [])
 
