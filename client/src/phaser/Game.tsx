@@ -13,8 +13,8 @@ const Game = () => {
             antialias: false,
         },
         scale:{
-            width: 500,
-            height: 500,
+            width: 480,
+            height: 480,
             //mode:  Phaser.Scale.FIT,
             //mode:  Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.Center.CENTER_BOTH,
@@ -40,9 +40,9 @@ const Game = () => {
     return (
         <div className="
         mt-8
-        border-2 border-orange-600
+        border-2 border-orange-600 rounded-lg
         overflow-hidden
-        w-[500px] h-[500px]" id="taxi-game"></div>
+        w-[480px] h-[480px]" id="taxi-game"></div>
     )
 }
 
