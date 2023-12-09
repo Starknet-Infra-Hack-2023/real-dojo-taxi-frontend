@@ -94,7 +94,7 @@ export const Navbar = () => {
                     2xl:font-bold
                     text-xs 2xl:text-base
                     ">
-                        $LORDS: {parseFloat(lordsBalance.toString()).toFixed(3)}</div>
+                        $LORDS: {parseFloat(lordsBalance.toString()).toFixed(1)}</div>
                 <div className="
                     bg-purple-400/80
                     rounded-lg mx-1
@@ -103,7 +103,7 @@ export const Navbar = () => {
                     text-xs 2xl:text-base
                     "
                     >
-                        $ETH: {parseFloat(ethBalance.toString()).toFixed(3)}</div>
+                        $ETH: {parseFloat(ethBalance.toString()).toFixed(6)}</div>
 
 
                 {/* FOR BUTTON KEEPS: onClick={()=>createBurner()} */}
