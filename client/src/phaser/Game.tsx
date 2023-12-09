@@ -8,16 +8,16 @@ const Game = () => {
     const gameConfig = {
         type: Phaser.AUTO,
         parent: "taxi-game",
-        backgroundColor: '#34222E',
+        backgroundColor: '#ffffff',
         render: {
             antialias: false,
         },
         scale:{
-            width: 750,
-            height: 650,
+            width: 500,
+            height: 500,
             //mode:  Phaser.Scale.FIT,
             //mode:  Phaser.Scale.RESIZE,
-            //autoCenter: Phaser.Scale.Center.CENTER_BOTH,
+            autoCenter: Phaser.Scale.Center.CENTER_BOTH,
             // width: '100%',
             // height: '100%'
         },
@@ -38,7 +38,11 @@ const Game = () => {
     }
     const game = usePhaserGame(gameConfig);
     return (
-        <div id="taxi-game"></div>
+        <div className="
+        mt-8
+        border-2 border-orange-600
+        overflow-hidden
+        w-[500px] h-[500px]" id="taxi-game"></div>
     )
 }
 
