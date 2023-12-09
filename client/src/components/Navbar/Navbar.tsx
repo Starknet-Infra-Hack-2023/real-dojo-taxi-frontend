@@ -50,7 +50,7 @@ export const Navbar = () => {
         <nav className="fixed z-50 w-full bg-transparent py-5
         ">
             {/* <ClickWrapper> */}
-            <div className="w-[50vw] container mx-auto flex flex-row 
+            <div className="xl:w-[50vw] mx-auto flex flex-row 
                 items-center justify-center h-16 text-gray-900
                 border rounded-lg border-gray-600/80
                 py-8
@@ -62,7 +62,8 @@ export const Navbar = () => {
                     <img src="/starkicon.png" alt="logo" className="w-14 h-14 mx-2"/>
                     <img src="/taxiRight.png" alt="logo" className="w-16 h-16 mx-2"/>
                     <span className="mx-2
-                    font-bold
+                    2xl:font-bold
+                    text-xs 2xl:text-base
                     ">Stark Taxi & Gas</span>
                     <img src="/cuteRobot2.png" alt="logo" className="w-14 h-14 mx-2"/>
                 </div>
@@ -70,21 +71,31 @@ export const Navbar = () => {
                 <div className="
                     bg-[#DBB874]
                     rounded-lg mx-1
-                    px-4 py-1.5 font-bold">
+                    px-4 py-1.5 
+                    2xl:font-bold
+                    text-xs 2xl:text-base
+                    ">
                         $LORDS: {lordsBalance}</div>
                 <div className="
                     bg-purple-400/80
                     rounded-lg mx-1
-                    px-4 py-1.5 font-bold"
+                    px-4 py-1.5 
+                    2xl:font-bold
+                    text-xs 2xl:text-base
+                    "
                     >
                         $ETH: {ethBalance}</div>
+
+
+                {/* FOR BUTTON KEEPS: onClick={()=>createBurner()} */}
                 <button className="
                     bg-[#28286B] text-red-500
                     rounded-lg
-                    px-4 py-1.5 font-bold
+                    px-4 py-1.5 
                     mx-1 mr-7
+                    2xl:font-bold
+                    text-xs 2xl:text-base
                 "
-                onClick={()=>createBurner()}
                 > { 
                 
                 list().length > 0 ?
