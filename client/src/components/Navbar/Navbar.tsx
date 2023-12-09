@@ -26,6 +26,7 @@ export const Navbar = () => {
     const [lordsBalance, setLordsBalance] = useState(0.00);
 
     const provider = new RpcProvider({
+        //nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL!,
         nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL!,
     });
     const masterAccount = new Account(provider, import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS!, import.meta.env.VITE_PUBLIC_DEMO_MASTER_PRIVATE_KEY!);
@@ -46,19 +47,23 @@ export const Navbar = () => {
     }, [useDemoWallet])
 
     useEffect(() => {
-        // get correct account
-        //get(import.meta.env.VITE_PUBLIC_DEMO_MASTER_ADDRESS);
-
         if (!demoAccount) return;
 
-        async function getBalance(erc20:Contract, setter:React.Dispatch<React.SetStateAction<string>>) {
+        async function getBalance(erc20:Contract, setter:React.Dispatch<React.SetStateAction<number>>) {
             erc20.connect(demoAccount);
             const walletbalance = await erc20.balanceOf(demoAccount.address);
-            setter(parseFloat(ethers.utils.formatEther(uint256.uint256ToBN(walletbalance.balance))).toFixed(4))
+            setter(parseFloat(ethers.utils.formatEther(uint256.uint256ToBN(walletbalance.balance))))
         }
-        getBalance(ethERC20, setEthBalance);
-        getBalance(lordsERC20, setLordsBalance);
-    }, [demoAccount, list])
+        
+
+        const interval = setInterval(() => { 
+            getBalance(ethERC20, setEthBalance);
+            getBalance(lordsERC20, setLordsBalance);
+        }, 1000);
+    
+        return () => clearInterval(interval);
+
+    }, [demoAccount, list, ethERC20, lordsERC20])
 
     return (
         <nav className="fixed z-50 w-full bg-transparent py-5
@@ -89,7 +94,7 @@ export const Navbar = () => {
                     2xl:font-bold
                     text-xs 2xl:text-base
                     ">
-                        $LORDS: {lordsBalance}</div>
+                        $LORDS: {parseFloat(lordsBalance.toString()).toFixed(4)}</div>
                 <div className="
                     bg-purple-400/80
                     rounded-lg mx-1
@@ -98,7 +103,7 @@ export const Navbar = () => {
                     text-xs 2xl:text-base
                     "
                     >
-                        $ETH: {ethBalance}</div>
+                        $ETH: {parseFloat(ethBalance.toString()).toFixed(4)}</div>
 
 
                 {/* FOR BUTTON KEEPS: onClick={()=>createBurner()} */}
